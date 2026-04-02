@@ -4,7 +4,12 @@ A minimal Flask REST API serving fake portfolio and market data
 for ETM ASMP testing purposes.
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from flask import Flask, jsonify, abort
+from auth import requires_auth
 
 app = Flask(__name__)
 
@@ -58,6 +63,7 @@ MARKET_DATA = [
 
 
 @app.route("/api/portfolios", methods=["GET"])
+@requires_auth
 def list_portfolios():
     """Return a summary list of all portfolios."""
     summaries = [
@@ -68,6 +74,7 @@ def list_portfolios():
 
 
 @app.route("/api/portfolios/<int:portfolio_id>", methods=["GET"])
+@requires_auth
 def get_portfolio(portfolio_id):
     """Return full details for a single portfolio."""
     for p in PORTFOLIOS:
@@ -77,6 +84,7 @@ def get_portfolio(portfolio_id):
 
 
 @app.route("/api/market-data", methods=["GET"])
+@requires_auth
 def get_market_data():
     """Return current fake market data."""
     return jsonify({"market_data": MARKET_DATA})
